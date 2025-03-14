@@ -1,6 +1,6 @@
 {
   "name": "view-control-mcp-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MCP (Master Control Program) サーバー - ローカルPCの操作、マウスクリック、画面キャプチャなどを行うためのサーバー",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
