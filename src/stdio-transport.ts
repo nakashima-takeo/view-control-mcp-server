@@ -6,7 +6,7 @@
  */
 
 import type { ReadLine } from 'node:readline';
-import { MCPProtocolHandler } from './mcp-protocol';
+import type { MCPProtocolHandler } from './mcp-protocol';
 import * as readline from 'node:readline';
 
 /**
