@@ -43,6 +43,28 @@ export class MCPProtocolHandler {
   }
 
   /**
+   * メソッドが存在するかチェックする
+   * @param method メソッド名
+   * @returns メソッドが存在するかどうか
+   */
+  hasMethod(method: string): boolean {
+    return !!this.methods[method];
+  }
+
+  /**
+   * メソッドを呼び出す
+   * @param method メソッド名
+   * @param params パラメータ
+   * @returns メソッドの実行結果
+   */
+  async callMethod(method: string, params?: unknown): Promise<unknown> {
+    if (!this.hasMethod(method)) {
+      throw new Error(`Method not found: ${method}`);
+    }
+    return await this.methods[method](params);
+  }
+
+  /**
    * MCPリクエストを処理する
    * @param req Expressリクエスト
    * @param res Expressレスポンス
@@ -58,14 +80,14 @@ export class MCPProtocolHandler {
       }
 
       // メソッド存在チェック
-      if (!this.methods[mcpRequest.method]) {
+      if (!this.hasMethod(mcpRequest.method)) {
         this.sendErrorResponse(res, mcpRequest.id, -32601, `Method not found: ${mcpRequest.method}`);
         return;
       }
 
       try {
         // メソッド実行
-        const result = await this.methods[mcpRequest.method](mcpRequest.params);
+        const result = await this.callMethod(mcpRequest.method, mcpRequest.params);
 
         // 成功レスポンス送信
         this.sendSuccessResponse(res, mcpRequest.id, result);

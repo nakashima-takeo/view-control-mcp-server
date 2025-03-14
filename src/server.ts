@@ -11,6 +11,14 @@ import { KeyboardService, type ModifierKey } from './services/keyboard.service';
 import { ScreenService } from './services/screen.service';
 
 /**
+ * stderrにログを出力する
+ * @param message ログメッセージ
+ */
+function logToStderr(message: string): void {
+  process.stderr.write(`${message}\n`);
+}
+
+/**
  * MCP（Model Context Protocol）サーバークラス
  * ローカルPCの操作、マウスクリック、画面キャプチャなどを行うためのサーバー
  */
@@ -148,7 +156,7 @@ export class MCPServer {
    */
   start(port = 3000): ReturnType<Express['listen']> {
     this.server = this.app.listen(port, () => {
-      console.log(`MCP Server is running on port ${port}`);
+      logToStderr(`MCP Server is running on port ${port}`);
     });
 
     return this.server;
@@ -161,7 +169,7 @@ export class MCPServer {
     if (this.server) {
       this.server.close();
       this.server = null;
-      console.log('MCP Server has been stopped');
+      logToStderr('MCP Server has been stopped');
     }
   }
 }
