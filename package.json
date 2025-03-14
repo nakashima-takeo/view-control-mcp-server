@@ -4,6 +4,9 @@
   "description": "MCP (Master Control Program) サーバー - ローカルPCの操作、マウスクリック、画面キャプチャなどを行うためのサーバー",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "view-control-mcp-server": "./dist/index.js"
+  },
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
