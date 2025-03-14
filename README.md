@@ -30,7 +30,6 @@ DesktopやCursorなどのMCPクライアントと連携できます。
 
 - **通信方式**
   - JSON-RPC 2.0準拠のMCPプロトコル
-  - HTTPトランスポート
   - Stdioトランスポート（標準入出力）
 
 ## インストール
@@ -46,29 +45,13 @@ npm install view-control-mcp-server
 #### コマンドラインから起動
 
 ```bash
-# HTTPモード（デフォルト）でポート3000で起動
-npx view-control-mcp-server
-
-# HTTPモードでカスタムポートで起動
-PORT=8080 npx view-control-mcp-server
-
 # Stdioモードで起動（Cursor等のMCPクライアントと直接連携する場合）
-TRANSPORT_MODE=stdio npx view-control-mcp-server
-```
-
-#### プログラムから起動
-
-```typescript
-import { MCPServer } from "view-control-mcp-server";
-
-const server = new MCPServer();
-server.start(3000); // ポート3000でサーバーを起動
+npx view-control-mcp-server
 ```
 
 ### MCPプロトコルでの通信
 
-MCPサーバーは `/mcp` エンドポイントでJSON-RPC
-2.0形式のリクエストを受け付けます。
+MCPサーバーはJSON-RPC 2.0形式のリクエストを標準入出力を通じて受け付けます。
 
 #### リクエスト形式
 
@@ -182,7 +165,7 @@ MCPサーバーは `/mcp` エンドポイントでJSON-RPC
    - **Name**: View Control MCP Server
    - **Transport**: stdio
    - **Command**: npx view-control-mcp-server
-   - **Args**: TRANSPORT_MODE=stdio
+   - **Args**: （空欄でOK - 自動的にStdioモードで起動します）
 4. 「Add」をクリックして保存します
 5. Cursorの拡張機能として利用できるようになります
 
@@ -194,7 +177,7 @@ MCPサーバーは `/mcp` エンドポイントでJSON-RPC
    - **Name**: View Control MCP Server
    - **Transport**: stdio
    - **Command**: npx view-control-mcp-server
-   - **Args**: TRANSPORT_MODE=stdio
+   - **Args**: （空欄でOK - 自動的にStdioモードで起動します）
 4. 「Add」をクリックして保存します
 5. Claudeの拡張機能として利用できるようになります
 

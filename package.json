@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "view-control-mcp-server": "./dist/index.js"
+    "view-control-mcp-server": "./bin/mcp-server.js"
   },
   "scripts": {
     "build": "tsc",
@@ -31,10 +31,8 @@
     "url": "git+https://github.com/yourusername/view-control-mcp-server.git"
   },
   "dependencies": {
-    "@types/express": "^5.0.0",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.13.10",
-    "express": "^4.21.2",
     "jest": "^29.7.0",
     "robotjs": "^0.6.0",
     "screenshot-desktop": "^1.15.1",
