@@ -6,9 +6,10 @@
 
 import screenshot from 'screenshot-desktop';
 import { writeFile } from 'node:fs/promises';
-import { dirname } from 'node:path';
+import { dirname, join } from 'node:path';
 import { mkdir } from 'node:fs/promises';
 import { stat } from 'node:fs/promises';
+import { cwd } from 'node:process';
 
 /**
  * ファイルシステムエラーの型定義
@@ -65,17 +66,46 @@ export class ScreenService {
   }
 
   /**
-   * 画面キャプチャを取得して指定したパスに保存する
-   * @param path 保存先のパス
+   * 現在の作業ディレクトリを取得する
+   * @returns 現在の作業ディレクトリ
    */
-  async captureAndSave(path: string): Promise<void> {
+  getCurrentDirectory(): string {
+    return cwd();
+  }
+
+  /**
+   * 相対パスを絶対パスに変換する
+   * @param relativePath 相対パス
+   * @returns 絶対パス
+   */
+  resolveRelativePath(relativePath: string): string {
+    // パスが既に絶対パスの場合はそのまま返す
+    if (relativePath.startsWith('/')) {
+      return relativePath;
+    }
+    
+    // 相対パスを現在のディレクトリからの絶対パスに変換
+    return join(this.getCurrentDirectory(), relativePath);
+  }
+
+  /**
+   * 画面キャプチャを取得して指定したパスに保存する
+   * @param path 保存先のパス（相対パスまたは絶対パス）
+   * @returns 保存したファイルの絶対パス
+   */
+  async captureAndSave(path: string): Promise<string> {
+    // 相対パスを絶対パスに解決
+    const absolutePath = this.resolveRelativePath(path);
+    
     // パスの検証
-    await this.validatePath(path);
-
+    await this.validatePath(absolutePath);
+    
     // ディレクトリの存在確認と作成
-    await this.ensureDirectoryExists(path);
-
+    await this.ensureDirectoryExists(absolutePath);
+    
     const imageBuffer = await this.capture();
-    await writeFile(path, imageBuffer);
+    await writeFile(absolutePath, imageBuffer);
+    
+    return absolutePath;
   }
 }

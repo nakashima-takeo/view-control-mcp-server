@@ -246,25 +246,25 @@ export class MCPServer {
     this.server.tool(
       "capture_and_save_screen",
       {
-        path: z.string().describe("保存先のファイルパス")
+        path: z.string().optional().describe("保存先のファイルパス（省略可）")
       },
       async ({ path }) => {
         try {
-          this.debug_log(`スクリーンキャプチャ保存ツールが呼び出されました: path=${path}`);
+          this.debug_log(`スクリーンキャプチャ保存ツールが呼び出されました: path=${path || '未指定'}`);
 
           // パスが空または未定義の場合、デフォルトのパスを使用
           if (!path) {
-            const timestamp = new Date().toISOString().replace(/:/g, '-');
-            path = `screenshots/screenshot_${timestamp}.png`;
-            this.debug_log(`パスが指定されていないため、デフォルトパスを使用します: ${path}`);
+            const timestamp = new Date().toISOString().replace(/:/g, '-').replace(/\./g, '_');
+            path = `screenshot_${timestamp}.png`;
+            this.debug_log(`パスが指定されていないため、カレントディレクトリにデフォルトファイル名で保存します: ${path}`);
           }
 
-          await this.screenService.captureAndSave(path);
-          this.debug_log(`スクリーンキャプチャを保存しました: ${path}`);
+          const absolutePath = await this.screenService.captureAndSave(path);
+          this.debug_log(`スクリーンキャプチャを保存しました: ${absolutePath}`);
           return {
             content: [{
               type: "text",
-              text: JSON.stringify({ success: true, path })
+              text: JSON.stringify({ success: true, path: absolutePath })
             }]
           };
         } catch (error: unknown) {
