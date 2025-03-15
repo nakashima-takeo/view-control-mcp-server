@@ -103,6 +103,7 @@ export class MCPServer {
     // 1. マウス位置取得ツール
     this.server.tool(
       "get_mouse_position",
+      "現在のマウスカーソルの位置（X座標とY座標）を取得します。",
       {}, // パラメータなし
       async () => {
         try {
@@ -125,6 +126,7 @@ export class MCPServer {
     // 2. マウス移動ツール
     this.server.tool(
       "move_mouse",
+      "マウスカーソルを指定した座標（X, Y）に移動させます。",
       {
         x: z.number().describe("移動先のX座標"),
         y: z.number().describe("移動先のY座標")
@@ -149,6 +151,7 @@ export class MCPServer {
     // 3. マウスクリックツール
     this.server.tool(
       "click_mouse",
+      "指定したマウスボタンでクリックまたはダブルクリックを実行します。",
       {
         button: z.enum(["left", "right", "middle"]).default("left").describe("クリックするボタン"),
         double: z.boolean().default(false).describe("ダブルクリックかどうか")
@@ -173,6 +176,7 @@ export class MCPServer {
     // 4. テキスト入力ツール
     this.server.tool(
       "type_text",
+      "指定したテキストをキーボードから入力します。",
       {
         text: z.string().describe("入力するテキスト")
       },
@@ -196,6 +200,7 @@ export class MCPServer {
     // 5. キー押下ツール
     this.server.tool(
       "press_key",
+      "指定したキーを押下します。オプションで修飾キー（command, alt, control, shift, fn）と組み合わせることができます。",
       {
         key: z.string().describe("押下するキー"),
         modifiers: z.array(
@@ -222,6 +227,7 @@ export class MCPServer {
     // 6. スクリーンキャプチャツール
     this.server.tool(
       "capture_screen",
+      "現在の画面をキャプチャし、画像データを返します。（Cursorでは使用不可）",
       {}, // パラメータなし
       async () => {
         try {
@@ -245,12 +251,13 @@ export class MCPServer {
     // 9. スクリーンキャプチャ保存ツール
     this.server.tool(
       "capture_and_save_screen",
+      "現在の画面をキャプチャし、指定したパスに保存します。フルパスを指定してください。",
       {
-        path: z.string().optional().describe("保存先のファイルパス（省略可）")
+        path: z.string().describe("保存先のファイルパス")
       },
       async ({ path }) => {
         try {
-          this.debug_log(`スクリーンキャプチャ保存ツールが呼び出されました: path=${path || '未指定'}`);
+          this.debug_log(`スクリーンキャプチャ保存ツールが呼び出されました: path=${path}`);
 
           // パスが空または未定義の場合、デフォルトのパスを使用
           if (!path) {
@@ -285,6 +292,7 @@ export class MCPServer {
     // 7. ドラッグ＆ドロップツール
     this.server.tool(
       "drag_and_drop",
+      "指定した開始座標から終了座標までマウスをドラッグ＆ドロップします。ファイルの移動やUI要素の操作に使用できます。",
       {
         startX: z.number().describe("開始X座標"),
         startY: z.number().describe("開始Y座標"),
@@ -312,6 +320,7 @@ export class MCPServer {
     // 8. キーボードショートカットツール
     this.server.tool(
       "keyboard_shortcut",
+      "複数のキーを同時に押下するショートカットを実行します。配列の最後の要素がメインキー、それ以外は修飾キーとして扱われます。",
       {
         keys: z.array(z.string()).min(1).describe("キーの配列（最後の要素がメインキー、それ以外は修飾キー）")
       },

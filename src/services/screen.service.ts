@@ -83,7 +83,7 @@ export class ScreenService {
     if (relativePath.startsWith('/')) {
       return relativePath;
     }
-    
+
     // 相対パスを現在のディレクトリからの絶対パスに変換
     return join(this.getCurrentDirectory(), relativePath);
   }
@@ -96,16 +96,16 @@ export class ScreenService {
   async captureAndSave(path: string): Promise<string> {
     // 相対パスを絶対パスに解決
     const absolutePath = this.resolveRelativePath(path);
-    
+
     // パスの検証
     await this.validatePath(absolutePath);
-    
+
     // ディレクトリの存在確認と作成
     await this.ensureDirectoryExists(absolutePath);
-    
+
     const imageBuffer = await this.capture();
     await writeFile(absolutePath, imageBuffer);
-    
+
     return absolutePath;
   }
 }
