@@ -60,16 +60,16 @@ export class StdioTransportHandler {
         // JSONをパース
         const request = JSON.parse(line);
         logToStderr(`Parsed request: ${JSON.stringify(request, null, 2)}`);
-        
+
         // リクエストを処理して結果を標準出力に書き込む
         const response = await this.processRequest(request);
-        
+
         // 通知の場合はレスポンスを返さない
         if (response === null) {
           logToStderr('Notification request, no response sent');
           return;
         }
-        
+
         logToStderr(`Sending response: ${JSON.stringify(response, null, 2)}`);
         process.stdout.write(`${JSON.stringify(response)}\n`);
       } catch (error) {
@@ -85,7 +85,7 @@ export class StdioTransportHandler {
         };
         logToStderr(`Sending error response: ${JSON.stringify(errorResponse, null, 2)}`);
         process.stdout.write(`${JSON.stringify(errorResponse)}\n`);
-        
+
         // エラーログをstderrに出力
         logToStderr(`Error processing request: ${error}`);
       }
@@ -189,4 +189,4 @@ export class StdioTransportHandler {
       };
     }
   }
-} 
+}

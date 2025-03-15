@@ -89,7 +89,7 @@ export class MCPProtocolHandler {
     if (!this.hasMethod(method)) {
       throw new Error(`Method not found: ${method}`);
     }
-    
+
     return await this.methods[method](params);
   }
 }
