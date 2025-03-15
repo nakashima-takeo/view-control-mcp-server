@@ -242,6 +242,46 @@ export class MCPServer {
       }
     );
 
+    // 9. スクリーンキャプチャ保存ツール
+    this.server.tool(
+      "capture_and_save_screen",
+      {
+        path: z.string().describe("保存先のファイルパス")
+      },
+      async ({ path }) => {
+        try {
+          this.debug_log(`スクリーンキャプチャ保存ツールが呼び出されました: path=${path}`);
+
+          // パスが空または未定義の場合、デフォルトのパスを使用
+          if (!path) {
+            const timestamp = new Date().toISOString().replace(/:/g, '-');
+            path = `screenshots/screenshot_${timestamp}.png`;
+            this.debug_log(`パスが指定されていないため、デフォルトパスを使用します: ${path}`);
+          }
+
+          await this.screenService.captureAndSave(path);
+          this.debug_log(`スクリーンキャプチャを保存しました: ${path}`);
+          return {
+            content: [{
+              type: "text",
+              text: JSON.stringify({ success: true, path })
+            }]
+          };
+        } catch (error: unknown) {
+          this.log(`スクリーンキャプチャ保存エラー: ${error}`);
+          return {
+            content: [{
+              type: "text",
+              text: JSON.stringify({
+                success: false,
+                error: error instanceof Error ? error.message : 'スクリーンキャプチャの保存に失敗しました'
+              })
+            }]
+          };
+        }
+      }
+    );
+
     // 7. ドラッグ＆ドロップツール
     this.server.tool(
       "drag_and_drop",

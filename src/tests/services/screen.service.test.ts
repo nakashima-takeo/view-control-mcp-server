@@ -6,6 +6,7 @@
  */
 
 import { ScreenService } from '../../services/screen.service';
+import { dirname } from 'node:path';
 
 // screenshot-desktopをモック化
 jest.mock('screenshot-desktop', () => ({
@@ -17,10 +18,16 @@ import screenshot from 'screenshot-desktop';
 
 // fsをモック化
 jest.mock('node:fs/promises', () => ({
-  writeFile: jest.fn().mockResolvedValue(undefined)
+  writeFile: jest.fn().mockResolvedValue(undefined),
+  mkdir: jest.fn().mockResolvedValue(undefined),
+  stat: jest.fn().mockImplementation((path) => {
+    return Promise.resolve({
+      isDirectory: () => false
+    });
+  })
 }));
 
-import { writeFile } from 'node:fs/promises';
+import { writeFile, mkdir, stat } from 'node:fs/promises';
 
 describe('ScreenService', () => {
   let screenService: ScreenService;
@@ -44,7 +51,26 @@ describe('ScreenService', () => {
       await screenService.captureAndSave(path);
       
       expect(screenshot).toHaveBeenCalledTimes(1);
+      expect(stat).toHaveBeenCalledWith(path);
+      expect(mkdir).toHaveBeenCalledWith(dirname(path), { recursive: true });
       expect(writeFile).toHaveBeenCalledWith(path, Buffer.from('fake-image-data'));
+    });
+
+    it('パスがディレクトリの場合はエラーをスローすること', async () => {
+      const directoryPath = '/path/to/directory';
+      
+      // ディレクトリとして判定されるようにモックを変更
+      (stat as jest.Mock).mockImplementationOnce(() => {
+        return Promise.resolve({
+          isDirectory: () => true
+        });
+      });
+      
+      await expect(screenService.captureAndSave(directoryPath))
+        .rejects.toThrow(`指定されたパスはディレクトリです: ${directoryPath}`);
+      
+      expect(screenshot).not.toHaveBeenCalled();
+      expect(writeFile).not.toHaveBeenCalled();
     });
   });
 }); 
